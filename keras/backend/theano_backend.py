@@ -309,6 +309,35 @@ def tile(x, n):
 def flatten(x):
     return T.flatten(x)
 
+# Comment(wdai): Added from keras-extra/theano_backend.py
+def tdflatten(x):
+    '''Turn an n-D tensor into a 3D tensor where
+    the first two dimensions are conserved.
+    '''
+    size = T.prod(x[0].shape) // x[0].shape[0]
+    nshape = (x.shape[0], x.shape[1], size)
+    y = T.reshape(x, nshape)
+    return y
+
+# Comment(wdai): Added from keras-extra/theano_backend.py
+def collapsetime(x):
+    '''Collapse first two dimensions consisting of 
+    num_samples and num_timesteps of 5D tensor to a 4D tensor 
+    with its first dimension being num_samples * num_timesteps.
+    '''
+    newshape = (x.shape[0]*x.shape[1], x.shape[2], x.shape[3], x.shape[4])
+    return T.reshape(x, newshape)
+
+# Comment(wdai): Added from keras-extra/theano_backend.py
+def expandtime(x, y):
+    '''Reshape 4D tensor y to a 5D tensor with the original
+    num_samples and num_timesteps dimensions of 
+    5D tensor x. Inverse operation as collapsetime(x).
+    '''
+    newshape = (x.shape[0], x.shape[1], y.shape[1], y.shape[2], y.shape[3])
+    z = T.reshape(y, newshape)
+    return z
+
 
 def batch_flatten(x):
     '''Turn a n-D tensor into a 2D tensor where
